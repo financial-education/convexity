@@ -6,17 +6,13 @@
 
 * Bond Convexity
 
-Bond convexity refers to the actual convex (non-linear) relationship between a bond's price and yield.  This is stated in relation to the linear [duration]() approximation of the bond price and yield relationship.
+Bond convexity refers to the actual convex (non-linear) relationship between a bond's price and yield.  This is stated in relation to the linear [[https://financial-education.github.io/intro_to_duration/][duration]] approximation of the bond price and yield relationship.
 
 -  Convexity is often used as a general term for the approximation error that exists when using duration to approximate interest rate risk.
-
 -  The idea is this: duration is a linear (first derivative) approximation.  To make the approximation more accurate, we can include a second-derivative adjustment, which is known as the *convexity adjustment*.  
-
 -  The convexity adjustment is more important as the change in yield increases.
-
 -  This is most easily understood graphically.
 
- 
 
 * Interactive Duration/Convexity App
 
@@ -24,11 +20,16 @@ The interactive app on the following slide allows you to see, for varying yields
 
 - Observe that duration always predicts that the bond's price will be lower than it will actually be. Bond owners love convexity!
 
-You can also see the effect of the coupon, [YTM](http://www.5minutefinance.org/concepts/for-what-is-the-yield-to-maturity-used), and maturity on the bond's duration and convexity.
+You can also see the effect of the coupon, [[https://financial-education.github.io/for_what_ytm_used/][YTM]], and maturity on the bond's duration and convexity.
 
 - A steeper slope means a higher duration (more interest rate risk).
 
 - When changing the coupon rate and maturity, note the changing values on the vertical axis to see the slope steepening and flattening.
+
+#+begin_export html
+<iframe src="https://micfm.shinyapps.io/convexity/" width="100%" height="100%"></iframe>
+#+end_export
+
 
  
 #+begin_comment
@@ -66,10 +67,10 @@ cash_flows <- 0
               }
           }
 
-*# find on x-axis where ytm equals the input ytm -----
+# find on x-axis where ytm equals the input ytm -----
    index <- seq_along(seq(0.01, .2, by = .01))[round(input$ytm,2) == round(ytmAxis, 2)]
 
-*# Calculate Duration and Modified Duration ----
+# Calculate Duration and Modified Duration ----
     Duration <- 1:input$maturity %*% (pvCashFlows / bondValue[index])
     modDur <- -1 * Duration / (1 + input$ytm)
     durLine <- bondValue[index] * (1 + (modDur * (ytmAxis - input$ytm)))
@@ -89,8 +90,6 @@ polygon(c(1:20, rev(1:20)), c(bondValue, rev(durLine)), col = "grey80", border =
 ```
 #+end_comment
  
-
-
 * Calculating Convexity
 
 To approximate the change in the bond's price given a particular change in yield, we add the convexity adjustment to our original duration calculation.  Convexity (C) is defined as:
@@ -119,8 +118,7 @@ On the next slide is an interactive duration and convexity calculator.
 
  
 
-* 
-
+#+begin_comment
 <!--- Duration and Convexity Calculator -->
 
 
@@ -192,6 +190,4 @@ sidebarLayout(
 	      )
 #}}}
 ```
-
- 
-
+#+end_comment

@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-02-06 Sun 20:05 -->
+<!-- 2022-02-07 Mon 20:25 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Convexity</title>
@@ -228,40 +228,35 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgc010399">1. Bond Convexity</a></li>
-<li><a href="#orgc0c73a1">2. Interactive Duration/Convexity App</a></li>
-<li><a href="#org65d051c">3. Calculating Convexity</a></li>
-<li><a href="#org6f46ab9">4. Duration with Convexity Adjustment</a></li>
-<li><a href="#orgec49af6">5. </a></li>
+<li><a href="#org3b66db6">1. Bond Convexity</a></li>
+<li><a href="#org7c0c5e7">2. Interactive Duration/Convexity App</a></li>
+<li><a href="#org60151f9">3. Calculating Convexity</a></li>
+<li><a href="#orgd7e5b60">4. Duration with Convexity Adjustment</a></li>
 </ul>
 </div>
 </div>
 
 
 
-<div id="outline-container-orgc010399" class="outline-2">
-<h2 id="orgc010399"><span class="section-number-2">1.</span> Bond Convexity</h2>
+<div id="outline-container-org3b66db6" class="outline-2">
+<h2 id="org3b66db6"><span class="section-number-2">1.</span> Bond Convexity</h2>
 <div class="outline-text-2" id="text-1">
 <p>
-Bond convexity refers to the actual convex (non-linear) relationship between a bond's price and yield.  This is stated in relation to the linear [duration]() approximation of the bond price and yield relationship.
+Bond convexity refers to the actual convex (non-linear) relationship between a bond's price and yield.  This is stated in relation to the linear <a href="https://financial-education.github.io/intro_to_duration/">duration</a> approximation of the bond price and yield relationship.
 </p>
 
 <ul class="org-ul">
 <li>Convexity is often used as a general term for the approximation error that exists when using duration to approximate interest rate risk.</li>
-
 <li>The idea is this: duration is a linear (first derivative) approximation.  To make the approximation more accurate, we can include a second-derivative adjustment, which is known as the <b>convexity adjustment</b>.</li>
-
 <li>The convexity adjustment is more important as the change in yield increases.</li>
-
 <li>This is most easily understood graphically.</li>
 </ul>
 </div>
 </div>
 
 
-
-<div id="outline-container-orgc0c73a1" class="outline-2">
-<h2 id="orgc0c73a1"><span class="section-number-2">2.</span> Interactive Duration/Convexity App</h2>
+<div id="outline-container-org7c0c5e7" class="outline-2">
+<h2 id="org7c0c5e7"><span class="section-number-2">2.</span> Interactive Duration/Convexity App</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 The interactive app on the following slide allows you to see, for varying yields, a bond's actual price, the price predicted by duration, and the effect of convexity.  
@@ -272,7 +267,7 @@ The interactive app on the following slide allows you to see, for varying yields
 </ul>
 
 <p>
-You can also see the effect of the coupon, [YTM](<a href="http://www.5minutefinance.org/concepts/for-what-is-the-yield-to-maturity-used">http://www.5minutefinance.org/concepts/for-what-is-the-yield-to-maturity-used</a>), and maturity on the bond's duration and convexity.
+You can also see the effect of the coupon, <a href="https://financial-education.github.io/for_what_ytm_used/">YTM</a>, and maturity on the bond's duration and convexity.
 </p>
 
 <ul class="org-ul">
@@ -280,13 +275,13 @@ You can also see the effect of the coupon, [YTM](<a href="http://www.5minutefina
 
 <li>When changing the coupon rate and maturity, note the changing values on the vertical axis to see the slope steepening and flattening.</li>
 </ul>
+
+<iframe src="https://micfm.shinyapps.io/convexity/" width="100%" height="100%"></iframe>
 </div>
 </div>
 
-
-
-<div id="outline-container-org65d051c" class="outline-2">
-<h2 id="org65d051c"><span class="section-number-2">3.</span> Calculating Convexity</h2>
+<div id="outline-container-org60151f9" class="outline-2">
+<h2 id="org60151f9"><span class="section-number-2">3.</span> Calculating Convexity</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 To approximate the change in the bond's price given a particular change in yield, we add the convexity adjustment to our original duration calculation.  Convexity (C) is defined as:
@@ -312,8 +307,8 @@ Taking the second derivative of the bond's price with respect to yield affords:
 
 
 
-<div id="outline-container-org6f46ab9" class="outline-2">
-<h2 id="org6f46ab9"><span class="section-number-2">4.</span> Duration with Convexity Adjustment</h2>
+<div id="outline-container-orgd7e5b60" class="outline-2">
+<h2 id="orgd7e5b60"><span class="section-number-2">4.</span> Duration with Convexity Adjustment</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 And so the approximation of the change in the bond's price for a given change in yield (\(\Delta y\)), including both duration and convexity, is:
@@ -330,141 +325,10 @@ On the next slide is an interactive duration and convexity calculator.
 </p>
 </div>
 </div>
-
-
-
-<div id="outline-container-orgec49af6" class="outline-2">
-<h2 id="orgec49af6"><span class="section-number-2">5.</span> </h2>
-<div class="outline-text-2" id="text-5">
-<p>
-&lt;!&#x2014; Duration and Convexity Calculator &#x2013;&gt;
-</p>
-
-
-<p>
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-#{{{
-sidebarLayout(
-    sidebarPanel(
-</p>
-
-<p>
-    sliderInput("years", "Years to Maturity", min = 0.5, max = 30, value = 10, step = 0.5),
-    sliderInput("ytm1", "Yield to Maturity", min = 0.01, max = 0.2, value = 0.05, step = 0.01),
-    sliderInput("change.ytm", "Change in Yield to Maturity", min = -0.05, max = 0.05, value = 0.01, step = 0.01),
-    sliderInput("coupon1", "Coupon Rate", min = 0.01, max = 0.2, value = 0.05, step = 0.01)
-	      ),
-mainPanel(
-    renderTable({
-</p>
-<ul class="org-ul">
-<li>calculate payments -&#x2014;</li>
-</ul>
-<p>
-coupon.pmt &lt;- (input$coupon1 * 1000) / 2
-periods &lt;- seq<sub>along</sub>(seq(from = 0.5, to = input$years, by = 0.5))
-payments &lt;- rep(coupon.pmt, max(periods))
-payments[max(periods)] &lt;- payments[max(periods)] + 1000
-</p>
-
-<ul class="org-ul">
-<li>bond value -&#x2014;</li>
-</ul>
-<p>
-bv &lt;- payments %*% (1 / (1 + (input$ytm1 / 2))<sup>periods</sup>)
-</p>
-
-<ul class="org-ul">
-<li>duration -&#x2014;</li>
-</ul>
-<p>
-numerator.duration &lt;- periods %*% (payments * (1 / (1 + (input$ytm1 / 2))<sup>periods</sup>))
-duration.in.periods &lt;- numerator.duration / bv
-macaulay.duration &lt;- duration.in.periods / 2
-</p>
-<ul class="org-ul">
-<li>modified.duration.in.periods &lt;- duration.in.periods / (1 + input$ytm1)</li>
-<li>modified.duration.in.years &lt;- modified.duration.in.periods / 2</li>
-</ul>
-<p>
-modified.duration.in.years &lt;- macaulay.duration / (1 + input$ytm1 / 2)
-</p>
-
-<ul class="org-ul">
-<li>convexity -&#x2014;</li>
-</ul>
-<p>
-second.derivative &lt;- (periods * (periods + 1)) %*% ((payments * (1 / (1 + input$ytm1 / 2)<sup>(periods + 2)</sup>)))
-</p>
-
-<p>
-convexity &lt;- second.derivative / bv
-</p>
-
-<ul class="org-ul">
-<li>annualize semiannual convexity</li>
-</ul>
-<p>
-convexity &lt;- convexity / (2<sup>2</sup>)
-</p>
-
-<ul class="org-ul">
-<li>approximate change in price</li>
-</ul>
-<p>
-price.change.by.duration &lt;- -modified.duration.in.years * bv * input$change.ytm
-price.change.by.duration.convexity &lt;- price.change.by.duration + 0.5 * convexity * bv * (input$change.ytm)<sup>2</sup>
-</p>
-
-<ul class="org-ul">
-<li>approximate percent change</li>
-</ul>
-<p>
-percent.change.by.duration &lt;- -modified.duration.in.years * input$change.ytm
-percent.change.by.duration.convexity &lt;- percent.change.by.duration + 0.5 * convexity * (input$change.ytm)<sup>2</sup>
-predicted.bv &lt;- bv + price.change.by.duration.convexity 
-</p>
-
-
-<p>
-new.bond.value &lt;- payments %*% (1 / (1 + ((input$ytm1 + input$change.ytm) / 2))<sup>periods</sup>)
-actual.price.change &lt;- (new.bond.value / bv - 1) * bv
-actual.percent.change &lt;- (new.bond.value / bv - 1)
-</p>
-
-<p>
-error &lt;- abs(predicted.bv - new.bond.value)
-</p>
-
-<p>
-df &lt;- data.frame(c(macaulay.duration, modified.duration.in.years, convexity, percent.change.by.duration * 100, percent.change.by.duration.convexity * 100, actual.percent.change * 100, price.change.by.duration, price.change.by.duration.convexity, actual.price.change, new.bond.value, predicted.bv, error), row.names = c("Macaulay Duration", "Modified Duration", "Convexity", "% Change by Duration", "% Change by Duration and Convexity", "Actual % Change", "Price Change by Duration", "Price Change by Duration and Convexity", "Actual Price Change", "Actual New Price", "Predicted New Price", "Difference: Predicted vs Actual"), stringsAsFactors = "FALSE")
-</p>
-
-<p>
-names(df) &lt;- ""
-df
-}, rownames = TRUE)#, align = 'c')
-</p>
-
-<ul class="org-ul">
-<li>renderPlot({</li>
-<li>plot(0, ylim = c(0,1), xlim = c(0,1), type = "n", xaxt = "n", yaxt = "n", ylab = "", xlab = "", main = "Black-Scholes Call Option Valuation")</li>
-<li>text(x = 0.5, y = 0.5, labels = paste(round(d2, 5)), cex = 5)</li>
-<li>text(x = 0.03, y = 0.95, labels = "d2", cex = 2)</li>
-<li>})</li>
-</ul>
-<p>
-)
-	      )
-#}}}
-```
-</p>
-</div>
-</div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Matt Brigida, Ph.D.</p>
-<p class="date">Created: 2022-02-06 Sun 20:05</p>
+<p class="date">Created: 2022-02-07 Mon 20:25</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
