@@ -114,7 +114,14 @@ And so the approximation of the change in the bond's price for a given change in
 
 - where $D^*$ is the bond's *Modified Duration*.
 
-On the next slide is an interactive duration and convexity calculator.  
+On the next slide is an interactive duration and convexity calculator.
+
+#+begin_src python :exports both
+class bond_convexity:
+    def __init__(self, coupon, years, ytm):
+        
+        
+#+end_src
 
  
 
@@ -134,36 +141,36 @@ sidebarLayout(
                   ),
     mainPanel(
         renderTable({
-            * calculate payments ----
+            ## calculate payments ----
             coupon.pmt <- (input$coupon1 * 1000) / 2
             periods <- seq_along(seq(from = 0.5, to = input$years, by = 0.5))
             payments <- rep(coupon.pmt, max(periods))
             payments[max(periods)] <- payments[max(periods)] + 1000
 
-            * bond value ----
+            ## bond value ----
             bv <- payments %*% (1 / (1 + (input$ytm1 / 2))^periods)
 
-            * duration ----
+            ## duration ----
             numerator.duration <- periods %*% (payments * (1 / (1 + (input$ytm1 / 2))^periods))
             duration.in.periods <- numerator.duration / bv
             macaulay.duration <- duration.in.periods / 2
-            * modified.duration.in.periods <- duration.in.periods / (1 + input$ytm1)
-            * modified.duration.in.years <- modified.duration.in.periods / 2
+            ## modified.duration.in.periods <- duration.in.periods / (1 + input$ytm1)
+            ## modified.duration.in.years <- modified.duration.in.periods / 2
             modified.duration.in.years <- macaulay.duration / (1 + input$ytm1 / 2)
 
-            * convexity ----
+            ## convexity ----
             second.derivative <- (periods * (periods + 1)) %*% ((payments * (1 / (1 + input$ytm1 / 2)^(periods + 2))))
             
             convexity <- second.derivative / bv
 
-            * annualize semiannual convexity
+            ## annualize semiannual convexity
             convexity <- convexity / (2^2)
 
-            * approximate change in price
+            ## approximate change in price
             price.change.by.duration <- -modified.duration.in.years * bv * input$change.ytm
             price.change.by.duration.convexity <- price.change.by.duration + 0.5 * convexity * bv * (input$change.ytm)^2
 
-            * approximate percent change
+            ## approximate percent change
             percent.change.by.duration <- -modified.duration.in.years * input$change.ytm
             percent.change.by.duration.convexity <- percent.change.by.duration + 0.5 * convexity * (input$change.ytm)^2
             predicted.bv <- bv + price.change.by.duration.convexity 
@@ -181,11 +188,11 @@ sidebarLayout(
             df
             }, rownames = TRUE)#, align = 'c')
 
-        * renderPlot({
-        *         plot(0, ylim = c(0,1), xlim = c(0,1), type = "n", xaxt = "n", yaxt = "n", ylab = "", xlab = "", main = "Black-Scholes Call Option Valuation")
-        *         text(x = 0.5, y = 0.5, labels = paste(round(d2, 5)), cex = 5)
-        *         text(x = 0.03, y = 0.95, labels = "d2", cex = 2)
-        * })
+        ## renderPlot({
+        ##         plot(0, ylim = c(0,1), xlim = c(0,1), type = "n", xaxt = "n", yaxt = "n", ylab = "", xlab = "", main = "Black-Scholes Call Option Valuation")
+        ##         text(x = 0.5, y = 0.5, labels = paste(round(d2, 5)), cex = 5)
+        ##         text(x = 0.03, y = 0.95, labels = "d2", cex = 2)
+        ## })
 )
 	      )
 #}}}
