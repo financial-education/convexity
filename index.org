@@ -117,8 +117,17 @@ And so the approximation of the change in the bond's price for a given change in
 On the next slide is an interactive duration and convexity calculator.
 
 #+begin_src python :exports both
-class bond_convexity:
+import numpy as np
+
+class bond:
     def __init__(self, coupon, years, ytm):
+        self.c = coupon
+        self.ye = years
+        self.ytm = ytm
+
+    def payments(self):
+        self.coupon_payment = (self.c * 1000) / 2
+                
         
         
 #+end_src
