@@ -121,14 +121,40 @@ import numpy as np
 
 class bond:
     def __init__(self, coupon, years, ytm):
-        self.c = coupon
-        self.ye = years
+        self.coupon = coupon
+        self.years = years
         self.ytm = ytm
 
     def payments(self):
-        self.coupon_payment = (self.c * 1000) / 2
-                
+        self.coupon_payment = (self.coupon * 1000) / 2
+        self.periods = np.linspace(1, self.years * 2, self.years * 2)
+        self.payments = np.repeat(self.coupon_payment, len(self.periods))
+        self.payments[len(self.periods) - 1] = self.payments[len(self.periods) - 1] + 1000
+        return self.payments
         
+    def value(self):
+        # self.payments()
+        self.value = np.inner(self.payments, (self.payments * 1 / (1 + (self.ytm / 2))**self.periods))
+        return self.value
+
+    def duration(self):
+        # self.payments()
+        # self.value()
+        numerator_duration = np.inner(self.periods, (self.payments * (1 / (1 + (self.ytm / 2))**self.periods)))
+        duration_in_periods = numerator_duration / self.value
+        self.macaulay_duration = duration_in_periods / 2
+        self.modified_duration_in_years = self.macaulay_duration / (1 + self.ytm / 2)
+        return self.modified_duration_in_years
+
+    def convexity(self):
+        # self.payments()
+        # self.value()
+        # self.duration()
+        second_derivative = np.inner((self.periods * (self.periods + 1)), ((self.payments * (1 / (1 + self.ytm / 2)**(self.periods + 2)))))
+        self.convexity = second_derivative / self.value
+        ## annualize semiannual convexity
+        self.convexity = self.convexity / (2**2)
+        return self.convexity
         
 #+end_src
 

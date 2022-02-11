@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-02-09 Wed 21:29 -->
+<!-- 2022-02-11 Fri 13:50 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Convexity</title>
@@ -228,18 +228,18 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org4a5bf1b">1. Bond Convexity</a></li>
-<li><a href="#org9774389">2. Interactive Duration/Convexity App</a></li>
-<li><a href="#orga896525">3. Calculating Convexity</a></li>
-<li><a href="#orga33b86c">4. Duration with Convexity Adjustment</a></li>
+<li><a href="#orgc93cf81">1. Bond Convexity</a></li>
+<li><a href="#orgc252ad9">2. Interactive Duration/Convexity App</a></li>
+<li><a href="#org22923ee">3. Calculating Convexity</a></li>
+<li><a href="#org9daeaa6">4. Duration with Convexity Adjustment</a></li>
 </ul>
 </div>
 </div>
 
 
 
-<div id="outline-container-org4a5bf1b" class="outline-2">
-<h2 id="org4a5bf1b"><span class="section-number-2">1.</span> Bond Convexity</h2>
+<div id="outline-container-orgc93cf81" class="outline-2">
+<h2 id="orgc93cf81"><span class="section-number-2">1.</span> Bond Convexity</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Bond convexity refers to the actual convex (non-linear) relationship between a bond's price and yield.  This is stated in relation to the linear <a href="https://financial-education.github.io/intro_to_duration/">duration</a> approximation of the bond price and yield relationship.
@@ -255,8 +255,8 @@ Bond convexity refers to the actual convex (non-linear) relationship between a b
 </div>
 
 
-<div id="outline-container-org9774389" class="outline-2">
-<h2 id="org9774389"><span class="section-number-2">2.</span> Interactive Duration/Convexity App</h2>
+<div id="outline-container-orgc252ad9" class="outline-2">
+<h2 id="orgc252ad9"><span class="section-number-2">2.</span> Interactive Duration/Convexity App</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 The interactive app on the following slide allows you to see, for varying yields, a bond's actual price, the price predicted by duration, and the effect of convexity.  
@@ -280,8 +280,8 @@ You can also see the effect of the coupon, <a href="https://financial-education.
 </div>
 </div>
 
-<div id="outline-container-orga896525" class="outline-2">
-<h2 id="orga896525"><span class="section-number-2">3.</span> Calculating Convexity</h2>
+<div id="outline-container-org22923ee" class="outline-2">
+<h2 id="org22923ee"><span class="section-number-2">3.</span> Calculating Convexity</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 To approximate the change in the bond's price given a particular change in yield, we add the convexity adjustment to our original duration calculation.  Convexity (C) is defined as:
@@ -307,8 +307,8 @@ Taking the second derivative of the bond's price with respect to yield affords:
 
 
 
-<div id="outline-container-orga33b86c" class="outline-2">
-<h2 id="orga33b86c"><span class="section-number-2">4.</span> Duration with Convexity Adjustment</h2>
+<div id="outline-container-org9daeaa6" class="outline-2">
+<h2 id="org9daeaa6"><span class="section-number-2">4.</span> Duration with Convexity Adjustment</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 And so the approximation of the change in the bond's price for a given change in yield (\(\Delta y\)), including both duration and convexity, is:
@@ -329,14 +329,40 @@ On the next slide is an interactive duration and convexity calculator.
 
 class bond:
     def __init__(self, coupon, years, ytm):
-	self.c = coupon
-	self.ye = years
+	self.coupon = coupon
+	self.years = years
 	self.ytm = ytm
 
     def payments(self):
-	self.coupon_payment = (self.c * 1000) / 2
+	self.coupon_payment = (self.coupon * 1000) / 2
+	self.periods = np.linspace(1, self.years * 2, self.years * 2)
+	self.payments = np.repeat(self.coupon_payment, len(self.periods))
+	self.payments[len(self.periods) - 1] = self.payments[len(self.periods) - 1] + 1000
+	return self.payments
 
+    def value(self):
+	# self.payments()
+	self.value = np.inner(self.payments, (self.payments * 1 / (1 + (self.ytm / 2))**self.periods))
+	return self.value
 
+    def duration(self):
+	# self.payments()
+	# self.value()
+	numerator_duration = np.inner(self.periods, (self.payments * (1 / (1 + (self.ytm / 2))**self.periods)))
+	duration_in_periods = numerator_duration / self.value
+	self.macaulay_duration = duration_in_periods / 2
+	self.modified_duration_in_years = self.macaulay_duration / (1 + self.ytm / 2)
+	return self.modified_duration_in_years
+
+    def convexity(self):
+	# self.payments()
+	# self.value()
+	# self.duration()
+	second_derivative = np.inner((self.periods * (self.periods + 1)), ((self.payments * (1 / (1 + self.ytm / 2)**(self.periods + 2)))))
+	self.convexity = second_derivative / self.value
+	## annualize semiannual convexity
+	self.convexity = self.convexity / (2**2)
+	return self.convexity
 
 </pre>
 </div>
@@ -349,7 +375,7 @@ None
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Matt Brigida, Ph.D.</p>
-<p class="date">Created: 2022-02-09 Wed 21:29</p>
+<p class="date">Created: 2022-02-11 Fri 13:50</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
