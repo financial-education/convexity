@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-02-12 Sat 10:49 -->
+<!-- 2022-02-12 Sat 11:00 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Convexity</title>
@@ -228,18 +228,18 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgd12dce2">1. Bond Convexity</a></li>
-<li><a href="#org79d6e1b">2. Visualizations</a></li>
-<li><a href="#org5388e1c">3. Calculating Convexity</a></li>
-<li><a href="#orgc5b09ff">4. Duration with Convexity Adjustment</a></li>
+<li><a href="#orgd205af6">1. Bond Convexity</a></li>
+<li><a href="#org6b6b39d">2. Visualizations</a></li>
+<li><a href="#org6f75ad2">3. Calculating Convexity</a></li>
+<li><a href="#orgb9fd0bc">4. Duration with Convexity Adjustment</a></li>
 </ul>
 </div>
 </div>
 
 
 
-<div id="outline-container-orgd12dce2" class="outline-2">
-<h2 id="orgd12dce2"><span class="section-number-2">1.</span> Bond Convexity</h2>
+<div id="outline-container-orgd205af6" class="outline-2">
+<h2 id="orgd205af6"><span class="section-number-2">1.</span> Bond Convexity</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Bond convexity refers to the actual convex (non-linear) relationship between a bond's price and yield.  This is stated in relation to the linear <a href="https://financial-education.github.io/intro_to_duration/">duration</a> approximation of the bond price and yield relationship.
@@ -254,8 +254,8 @@ Bond convexity refers to the actual convex (non-linear) relationship between a b
 </div>
 </div>
 
-<div id="outline-container-org79d6e1b" class="outline-2">
-<h2 id="org79d6e1b"><span class="section-number-2">2.</span> Visualizations</h2>
+<div id="outline-container-org6b6b39d" class="outline-2">
+<h2 id="org6b6b39d"><span class="section-number-2">2.</span> Visualizations</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 The following series of visualizations allows you to see, for varying yields, a bond's actual price, the price predicted by duration, and the effect of convexity.  
@@ -279,9 +279,10 @@ You can also see the effect of the coupon, <a href="https://financial-education.
 
 <div class="org-src-container">
 <pre class="src src-R">##Bond Price, Duration, and Convexity
-ytm &lt;- 0.07
-coupon &lt;- 0.05
-years &lt;- 10
+plot_convexity &lt;- function(input_ytm = 0.07, input_coupon = 0.05, input_years = 10){
+ytm &lt;- input_ytm
+coupon &lt;- input_coupon
+years &lt;- input_years
 
 bondValue &lt;- 0
 ytmAxis &lt;- seq(0.01, .2, by = .01)
@@ -315,7 +316,7 @@ cash_flows &lt;- 0
 
 yAxis &lt;- c("0.01", "", "", "", "0.05", "", "", "", "", "0.10", "", "", "", "", "0.15", "", "", "", "", "0.20")
 
-png("convexity.png")
+png(paste0("./img/convexity_", ytm, "_", coupon, "_", years, ".png"))
 plot(1:20, bondValue, xaxt = "n", main = "Bond Price versus Yield to Maturity", ylab = "Bond Price ($)", xlab = "Yield to Maturity", type = "n", lwd = 4)
 axis(1, at = 1:20, labels = yAxis)
 lines(1:20, bondValue, lwd = 4)
@@ -324,20 +325,47 @@ legend('topright', c("Bond Price", "Duration Approximation of the Bond Price ", 
 ## attempting to shade region between the two lines [not working] ----
 polygon(c(1:20, rev(1:20)), c(bondValue, rev(durLine)), col = "grey80", border = NA)
 dev.off()
+}
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-R">plot_convexity(0.07, 0.05, 10)
 </pre>
 </div>
 
 
-<div id="orgd3adf54" class="figure">
-<p><img src="./convexity.png" alt="convexity.png" />
+<div id="org4342cc2" class="figure">
+<p><img src="./img/convexity_0.07_0.05_10.png" alt="convexity_0.07_0.05_10.png" />
 </p>
-<p><span class="figure-number">Figure 1: </span>Bond Duration and Convexity Error</p>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-R">plot_convexity(0.03, 0.05, 10)
+</pre>
+</div>
+
+
+<div id="orgeefd6c2" class="figure">
+<p><img src="./img/convexity_0.03_0.05_10.png" alt="convexity_0.03_0.05_10.png" />
+</p>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-R">plot_convexity(0.05, 0.05, 20)
+</pre>
+</div>
+
+
+<div id="org876f8a8" class="figure">
+<p><img src="./img/convexity_0.05_0.05_20.png" alt="convexity_0.05_0.05_20.png" />
+</p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org5388e1c" class="outline-2">
-<h2 id="org5388e1c"><span class="section-number-2">3.</span> Calculating Convexity</h2>
+<div id="outline-container-org6f75ad2" class="outline-2">
+<h2 id="org6f75ad2"><span class="section-number-2">3.</span> Calculating Convexity</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 To approximate the change in the bond's price given a particular change in yield, we add the convexity adjustment to our original duration calculation.  Convexity (C) is defined as:
@@ -363,8 +391,8 @@ Taking the second derivative of the bond's price with respect to yield affords:
 
 
 
-<div id="outline-container-orgc5b09ff" class="outline-2">
-<h2 id="orgc5b09ff"><span class="section-number-2">4.</span> Duration with Convexity Adjustment</h2>
+<div id="outline-container-orgb9fd0bc" class="outline-2">
+<h2 id="orgb9fd0bc"><span class="section-number-2">4.</span> Duration with Convexity Adjustment</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 And so the approximation of the change in the bond's price for a given change in yield (\(\Delta y\)), including both duration and convexity, is:
@@ -431,7 +459,7 @@ None
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Matt Brigida, Ph.D.</p>
-<p class="date">Created: 2022-02-12 Sat 10:49</p>
+<p class="date">Created: 2022-02-12 Sat 11:00</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

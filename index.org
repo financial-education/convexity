@@ -45,11 +45,12 @@ You can also see the effect of the coupon, [[https://financial-education.github.
 
 
  
-#+begin_src R :exports both :results graphics :file convexity.pdf
+#+begin_src R :exports both :results graphics :file convexity.pdf :session *R*
 ##Bond Price, Duration, and Convexity
-ytm <- 0.07
-coupon <- 0.05
-years <- 10
+plot_convexity <- function(input_ytm = 0.07, input_coupon = 0.05, input_years = 10){
+ytm <- input_ytm
+coupon <- input_coupon
+years <- input_years
 
 bondValue <- 0
 ytmAxis <- seq(0.01, .2, by = .01)
@@ -83,7 +84,7 @@ cash_flows <- 0
 
 yAxis <- c("0.01", "", "", "", "0.05", "", "", "", "", "0.10", "", "", "", "", "0.15", "", "", "", "", "0.20")
 
-png("convexity.png")
+png(paste0("./img/convexity_", ytm, "_", coupon, "_", years, ".png"))
 plot(1:20, bondValue, xaxt = "n", main = "Bond Price versus Yield to Maturity", ylab = "Bond Price ($)", xlab = "Yield to Maturity", type = "n", lwd = 4)
 axis(1, at = 1:20, labels = yAxis)
 lines(1:20, bondValue, lwd = 4)
@@ -92,13 +93,36 @@ legend('topright', c("Bond Price", "Duration Approximation of the Bond Price ", 
 ## attempting to shade region between the two lines [not working] ----
 polygon(c(1:20, rev(1:20)), c(bondValue, rev(durLine)), col = "grey80", border = NA)
 dev.off()
+}
 #+end_src
 
 #+RESULTS:
 
-#+caption: Bond Duration and Convexity Error
-[[./convexity.png]]
- 
+
+#+begin_src R :exports both :results graphics :file convexity.pdf :session *R*
+plot_convexity(0.07, 0.05, 10)
+#+end_src
+
+#+RESULTS:
+
+[[./img/convexity_0.07_0.05_10.png]]
+
+#+begin_src R :exports both :results graphics :file convexity.pdf :session *R*
+plot_convexity(0.03, 0.05, 10)
+#+end_src
+
+#+RESULTS:
+
+[[./img/convexity_0.03_0.05_10.png]]
+
+#+begin_src R :exports both :results graphics :file convexity.pdf :session *R*
+plot_convexity(0.05, 0.05, 20)
+#+end_src
+
+#+RESULTS:
+
+[[./img/convexity_0.05_0.05_20.png]]
+
 * Calculating Convexity
 
 To approximate the change in the bond's price given a particular change in yield, we add the convexity adjustment to our original duration calculation.  Convexity (C) is defined as:
