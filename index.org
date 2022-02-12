@@ -13,8 +13,8 @@ Bond convexity refers to the actual convex (non-linear) relationship between a b
 -  The convexity adjustment is more important as the change in yield increases.
 -  This is most easily understood graphically.
 
-
-* Interactive Duration/Convexity App
+#+begin_comment
+##* Interactive Duration/Convexity App
 
 The interactive app on the following slide allows you to see, for varying yields, a bond's actual price, the price predicted by duration, and the effect of convexity.  
 
@@ -29,66 +29,75 @@ You can also see the effect of the coupon, [[https://financial-education.github.
 #+begin_export html
 <iframe src="https://micfm.shinyapps.io/convexity/" width="100%" height="100%"></iframe>
 #+end_export
+#+end_comment
+
+* Visualizations
+
+The following series of visualizations allows you to see, for varying yields, a bond's actual price, the price predicted by duration, and the effect of convexity.  
+
+- Observe that duration always predicts that the bond's price will be lower than it will actually be. Bond owners love convexity!
+
+You can also see the effect of the coupon, [[https://financial-education.github.io/for_what_ytm_used/][YTM]], and maturity on the bond's duration and convexity.
+
+- A steeper slope means a higher duration (more interest rate risk).
+
+- When changing the coupon rate and maturity, note the changing values on the vertical axis to see the slope steepening and flattening.
 
 
  
-#+begin_comment
-<!--- Bond Price, Duration, and Convexity -->
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-#{{{
-inputPanel(    
-       sliderInput("ytm", label = "Yield to Maturity", max = .2, min = 0.01, value = .05, step = .01),
-       sliderInput("coupon", label = "Coupon Rate", max = .2, min = 0.01, value = .05, step = .01),
-       sliderInput("maturity", label = "Years to Maturity", max = 50, min = 1, value = 10)
-)
-
-renderPlot({
+#+begin_src R :exports both :results graphics :file convexity.pdf
+##Bond Price, Duration, and Convexity
+ytm <- 0.07
+coupon <- 0.05
+years <- 10
 
 bondValue <- 0
 ytmAxis <- seq(0.01, .2, by = .01)
 period <- 1
 
 cash_flows <- 0
-    for (i in 1:input$maturity){
+    for (i in 1:years){
         cash_flows[i] <- 
-            (input$coupon * 1000) }
+            (coupon * 1000) }
 
     cash_flows[length(cash_flows)] <- cash_flows[length(cash_flows)] + 1000 
-    pvCashFlows <- cash_flows / (1 + input$ytm)^(1:input$maturity)
+    pvCashFlows <- cash_flows / (1 + ytm)^(1:years)
 
-*# Bond Calculation: includes semiannual case which is not used ----   
+## Bond Calculation: includes semiannual case which is not used ----   
      if (period == 1) {
          for (i in seq_along(ytmAxis)){
-          bondValue[i] <- (input$coupon * 1000) * ((1 - 1 / (1 + ytmAxis[i])^(input$maturity)) / ytmAxis[i]) + 1000 / (1 + ytmAxis[i])^(input$maturity) }
+          bondValue[i] <- (coupon * 1000) * ((1 - 1 / (1 + ytmAxis[i])^(years)) / ytmAxis[i]) + 1000 / (1 + ytmAxis[i])^(years) }
  }    else {
          for (i in seq_along(ytmAxis)){
-          bondValue[i] <- (input$coupon * (1000 / 2)) * ((1 - 1 / (1 + (ytmAxis[i] / 2))^(input$maturity * 2)) / (ytmAxis[i] / 2)) + 1000 / (1 + (ytmAxis[i] / 2))^(input$maturity * 2)
+          bondValue[i] <- (coupon * (1000 / 2)) * ((1 - 1 / (1 + (ytmAxis[i] / 2))^(years * 2)) / (ytmAxis[i] / 2)) + 1000 / (1 + (ytmAxis[i] / 2))^(years * 2)
               }
           }
 
 # find on x-axis where ytm equals the input ytm -----
-   index <- seq_along(seq(0.01, .2, by = .01))[round(input$ytm,2) == round(ytmAxis, 2)]
+   index <- seq_along(seq(0.01, .2, by = .01))[round(ytm,2) == round(ytmAxis, 2)]
 
 # Calculate Duration and Modified Duration ----
-    Duration <- 1:input$maturity %*% (pvCashFlows / bondValue[index])
-    modDur <- -1 * Duration / (1 + input$ytm)
-    durLine <- bondValue[index] * (1 + (modDur * (ytmAxis - input$ytm)))
+    Duration <- 1:years %*% (pvCashFlows / bondValue[index])
+    modDur <- -1 * Duration / (1 + ytm)
+    durLine <- bondValue[index] * (1 + (modDur * (ytmAxis - ytm)))
 
 yAxis <- c("0.01", "", "", "", "0.05", "", "", "", "", "0.10", "", "", "", "", "0.15", "", "", "", "", "0.20")
 
+png("convexity.png")
 plot(1:20, bondValue, xaxt = "n", main = "Bond Price versus Yield to Maturity", ylab = "Bond Price ($)", xlab = "Yield to Maturity", type = "n", lwd = 4)
 axis(1, at = 1:20, labels = yAxis)
 lines(1:20, bondValue, lwd = 4)
 lines(1:20, durLine, lwd = 5, col = 4)
 legend('topright', c("Bond Price", "Duration Approximation of the Bond Price ", "Duration Error Region (Convexity)"), lty = c(1,1,1,1), col=c(1,4, "grey80"), lwd = c(5,5, 15))
-*# attempting to shade region between the two lines [not working] ----
+## attempting to shade region between the two lines [not working] ----
 polygon(c(1:20, rev(1:20)), c(bondValue, rev(durLine)), col = "grey80", border = NA)
-         
-   })
-#}}}
-```
-#+end_comment
+dev.off()
+#+end_src
+
+#+RESULTS:
+
+#+caption: Bond Duration and Convexity Error
+[[./convexity.png]]
  
 * Calculating Convexity
 
