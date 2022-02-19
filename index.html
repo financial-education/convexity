@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2022-02-15 Tue 11:27 -->
+<!-- 2022-02-18 Fri 22:02 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Convexity</title>
@@ -229,16 +229,17 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgbc27a30">1. Bond Convexity</a></li>
-<li><a href="#org1e876c1">2. Visualizations</a></li>
-<li><a href="#orgd6800a7">3. Calculating Convexity</a></li>
-<li><a href="#orgb0d74e2">4. Duration with Convexity Adjustment</a></li>
+<li><a href="#org8046aaa">1. Bond Convexity</a></li>
+<li><a href="#org3597e71">2. Visualizations</a></li>
+<li><a href="#orgfc3d0fa">3. Calculating Convexity</a></li>
+<li><a href="#org2c26f0f">4. Duration with Convexity Adjustment</a></li>
+<li><a href="#orgeb2bbcf">5. Duration and Convexity Calculator</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgbc27a30" class="outline-2">
-<h2 id="orgbc27a30"><span class="section-number-2">1.</span> Bond Convexity</h2>
+<div id="outline-container-org8046aaa" class="outline-2">
+<h2 id="org8046aaa"><span class="section-number-2">1.</span> Bond Convexity</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Bond convexity refers to the actual convex (non-linear) relationship between a bond's price and yield.  This is stated in relation to the linear <a href="https://financial-education.github.io/intro_to_duration/">duration</a> approximation of the bond price and yield relationship.
@@ -253,8 +254,8 @@ Bond convexity refers to the actual convex (non-linear) relationship between a b
 </div>
 </div>
 
-<div id="outline-container-org1e876c1" class="outline-2">
-<h2 id="org1e876c1"><span class="section-number-2">2.</span> Visualizations</h2>
+<div id="outline-container-org3597e71" class="outline-2">
+<h2 id="org3597e71"><span class="section-number-2">2.</span> Visualizations</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 The following series of visualizations allows you to see, for varying yields, a bond's actual price, the price predicted by duration, and the effect of convexity.  
@@ -334,7 +335,7 @@ dev.off()
 </div>
 
 
-<div id="org026b439" class="figure">
+<div id="org68f9773" class="figure">
 <p><img src="./img/convexity_0.07_0.05_10.png" alt="convexity_0.07_0.05_10.png" />
 </p>
 </div>
@@ -345,7 +346,7 @@ dev.off()
 </div>
 
 
-<div id="org19caeed" class="figure">
+<div id="org2b95198" class="figure">
 <p><img src="./img/convexity_0.03_0.05_10.png" alt="convexity_0.03_0.05_10.png" />
 </p>
 </div>
@@ -356,15 +357,15 @@ dev.off()
 </div>
 
 
-<div id="org10d9269" class="figure">
+<div id="org982a273" class="figure">
 <p><img src="./img/convexity_0.05_0.05_20.png" alt="convexity_0.05_0.05_20.png" />
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgd6800a7" class="outline-2">
-<h2 id="orgd6800a7"><span class="section-number-2">3.</span> Calculating Convexity</h2>
+<div id="outline-container-orgfc3d0fa" class="outline-2">
+<h2 id="orgfc3d0fa"><span class="section-number-2">3.</span> Calculating Convexity</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 To approximate the change in the bond's price given a particular change in yield, we add the convexity adjustment to our original duration calculation.  Convexity (C) is defined as:
@@ -390,8 +391,8 @@ Taking the second derivative of the bond's price with respect to yield affords:
 
 
 
-<div id="outline-container-orgb0d74e2" class="outline-2">
-<h2 id="orgb0d74e2"><span class="section-number-2">4.</span> Duration with Convexity Adjustment</h2>
+<div id="outline-container-org2c26f0f" class="outline-2">
+<h2 id="org2c26f0f"><span class="section-number-2">4.</span> Duration with Convexity Adjustment</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 And so the approximation of the change in the bond's price for a given change in yield (\(\Delta y\)), including both duration and convexity, is:
@@ -455,10 +456,93 @@ None
 </pre>
 </div>
 </div>
+
+
+
+<div id="outline-container-orgeb2bbcf" class="outline-2">
+<h2 id="orgeb2bbcf"><span class="section-number-2">5.</span> Duration and Convexity Calculator</h2>
+<div class="outline-text-2" id="text-5">
+<div class="org-src-container">
+<pre class="src src-R">years <span style="color: #a9a1e1;">&lt;-</span> 10
+ytm <span style="color: #a9a1e1;">&lt;-</span> 0.1
+change_ytm <span style="color: #a9a1e1;">&lt;-</span> 0.01
+coupon <span style="color: #a9a1e1;">&lt;-</span> 0.05
+
+<span style="color: #5B6268;">## </span><span style="color: #5B6268;">calculate payments ----</span>
+coupon.pmt <span style="color: #a9a1e1;">&lt;-</span> (coupon * 1000) / 2
+periods <span style="color: #a9a1e1;">&lt;-</span> seq_along(seq(from = 0.5, to = years, by = 0.5))
+payments <span style="color: #a9a1e1;">&lt;-</span> rep(coupon.pmt, max(periods))
+payments[max(periods)] <span style="color: #a9a1e1;">&lt;-</span> payments[max(periods)] + 1000
+
+<span style="color: #5B6268;">## </span><span style="color: #5B6268;">bond value ----</span>
+bv <span style="color: #a9a1e1;">&lt;-</span> payments <span style="color: #a9a1e1;">%*%</span> (1 / (1 + (ytm / 2))^periods)
+
+<span style="color: #5B6268;">## </span><span style="color: #5B6268;">duration ----</span>
+numerator.duration <span style="color: #a9a1e1;">&lt;-</span> periods <span style="color: #a9a1e1;">%*%</span> (payments * (1 / (1 + (ytm / 2))^periods))
+duration.in.periods <span style="color: #a9a1e1;">&lt;-</span> numerator.duration / bv
+macaulay.duration <span style="color: #a9a1e1;">&lt;-</span> duration.in.periods / 2
+<span style="color: #5B6268;">## </span><span style="color: #5B6268;">modified.duration.in.periods &lt;- duration.in.periods / (1 + ytm)</span>
+<span style="color: #5B6268;">## </span><span style="color: #5B6268;">modified.duration.in.years &lt;- modified.duration.in.periods / 2</span>
+modified.duration.in.years <span style="color: #a9a1e1;">&lt;-</span> macaulay.duration / (1 + ytm / 2)
+
+<span style="color: #5B6268;">## </span><span style="color: #5B6268;">convexity ----</span>
+second.derivative <span style="color: #a9a1e1;">&lt;-</span> (periods * (periods + 1)) <span style="color: #a9a1e1;">%*%</span> ((payments * (1 / (1 + ytm / 2)^(periods + 2))))
+
+convexity <span style="color: #a9a1e1;">&lt;-</span> second.derivative / bv
+
+<span style="color: #5B6268;">## </span><span style="color: #5B6268;">annualize semiannual convexity</span>
+convexity <span style="color: #a9a1e1;">&lt;-</span> convexity / (2^2)
+
+<span style="color: #5B6268;">## </span><span style="color: #5B6268;">approximate change in price</span>
+price.change.by.duration <span style="color: #a9a1e1;">&lt;-</span> -modified.duration.in.years * bv * change_ytm
+price.change.by.duration.convexity <span style="color: #a9a1e1;">&lt;-</span> price.change.by.duration + 0.5 * convexity * bv * (change_ytm)^2
+
+<span style="color: #5B6268;">## </span><span style="color: #5B6268;">approximate percent change</span>
+percent.change.by.duration <span style="color: #a9a1e1;">&lt;-</span> -modified.duration.in.years * change_ytm
+percent.change.by.duration.convexity <span style="color: #a9a1e1;">&lt;-</span> percent.change.by.duration + 0.5 * convexity * (change_ytm)^2
+predicted.bv <span style="color: #a9a1e1;">&lt;-</span> bv + price.change.by.duration.convexity 
+
+
+new.bond.value <span style="color: #a9a1e1;">&lt;-</span> payments <span style="color: #a9a1e1;">%*%</span> (1 / (1 + ((ytm + change_ytm) / 2))^periods)
+actual.price.change <span style="color: #a9a1e1;">&lt;-</span> (new.bond.value / bv - 1) * bv
+actual.percent.change <span style="color: #a9a1e1;">&lt;-</span> (new.bond.value / bv - 1)
+
+error <span style="color: #a9a1e1;">&lt;-</span> abs(predicted.bv - new.bond.value)
+
+df <span style="color: #a9a1e1;">&lt;-</span> data.frame(c(macaulay.duration, modified.duration.in.years, convexity, percent.change.by.duration * 100, percent.change.by.duration.convexity * 100, actual.percent.change * 100, price.change.by.duration, price.change.by.duration.convexity, actual.price.change, new.bond.value, predicted.bv, error), row.names = c(<span style="color: #98be65;">"Macaulay Duration"</span>, <span style="color: #98be65;">"Modified Duration"</span>, <span style="color: #98be65;">"Convexity"</span>, <span style="color: #98be65;">"% Change by Duration"</span>, <span style="color: #98be65;">"% Change by Duration and Convexity"</span>, <span style="color: #98be65;">"Actual % Change"</span>, <span style="color: #98be65;">"Price Change by Duration"</span>, <span style="color: #98be65;">"Price Change by Duration and Convexity"</span>, <span style="color: #98be65;">"Actual Price Change"</span>, <span style="color: #98be65;">"Actual New Price"</span>, <span style="color: #98be65;">"Predicted New Price"</span>, <span style="color: #98be65;">"Difference: Predicted vs Actual"</span>), stringsAsFactors = <span style="color: #98be65;">"FALSE"</span>)
+
+names(df) <span style="color: #a9a1e1;">&lt;-</span> <span style="color: #98be65;">""</span>
+
+<span style="color: #a9a1e1;">library</span>(xtable)
+
+print(xtable(df), type = <span style="color: #98be65;">"html"</span>)
+
+</pre>
+</div>
+
+<!-- html table generated in R 4.1.2 by xtable 1.8-4 package -->
+<!-- Fri Feb 18 22:02:53 2022 -->
+<table border=1>
+<tr> <th>  </th> <th>  </th>  </tr>
+  <tr> <td align="right"> Macaulay Duration </td> <td align="right"> 7.49 </td> </tr>
+  <tr> <td align="right"> Modified Duration </td> <td align="right"> 7.13 </td> </tr>
+  <tr> <td align="right"> Convexity </td> <td align="right"> 64.44 </td> </tr>
+  <tr> <td align="right"> % Change by Duration </td> <td align="right"> -7.13 </td> </tr>
+  <tr> <td align="right"> % Change by Duration and Convexity </td> <td align="right"> -6.81 </td> </tr>
+  <tr> <td align="right"> Actual % Change </td> <td align="right"> -6.82 </td> </tr>
+  <tr> <td align="right"> Price Change by Duration </td> <td align="right"> -49.10 </td> </tr>
+  <tr> <td align="right"> Price Change by Duration and Convexity </td> <td align="right"> -46.88 </td> </tr>
+  <tr> <td align="right"> Actual Price Change </td> <td align="right"> -46.96 </td> </tr>
+  <tr> <td align="right"> Actual New Price </td> <td align="right"> 641.49 </td> </tr>
+  <tr> <td align="right"> Predicted New Price </td> <td align="right"> 641.56 </td> </tr>
+  <tr> <td align="right"> Difference: Predicted vs Actual </td> <td align="right"> 0.07 </td> </tr>
+   </table>
+</div>
+</div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Matt Brigida, Ph.D.</p>
-<p class="date">Created: 2022-02-15 Tue 11:27</p>
+<p class="date">Created: 2022-02-18 Fri 22:02</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

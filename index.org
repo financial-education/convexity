@@ -192,61 +192,82 @@ class bond:
 
  
 
-#+begin_comment
-<!--- Duration and Convexity Calculator -->
+* Duration and Convexity Calculator
 
-
-#+begin_src R :exports both
+#+begin_src R :exports both :session calc :results html :wrap export html
 years <- 10
 ytm <- 0.1
 change_ytm <- 0.01
 coupon <- 0.05
 
 ## calculate payments ----
-coupon.pmt <- (input$coupon * 1000) / 2
-            periods <- seq_along(seq(from = 0.5, to = input$years, by = 0.5))
-            payments <- rep(coupon.pmt, max(periods))
-            payments[max(periods)] <- payments[max(periods)] + 1000
+coupon.pmt <- (coupon * 1000) / 2
+periods <- seq_along(seq(from = 0.5, to = years, by = 0.5))
+payments <- rep(coupon.pmt, max(periods))
+payments[max(periods)] <- payments[max(periods)] + 1000
 
-            ## bond value ----
-            bv <- payments %*% (1 / (1 + (input$ytm1 / 2))^periods)
+## bond value ----
+bv <- payments %*% (1 / (1 + (ytm / 2))^periods)
 
-            ## duration ----
-            numerator.duration <- periods %*% (payments * (1 / (1 + (input$ytm1 / 2))^periods))
-            duration.in.periods <- numerator.duration / bv
-            macaulay.duration <- duration.in.periods / 2
-            ## modified.duration.in.periods <- duration.in.periods / (1 + input$ytm1)
-            ## modified.duration.in.years <- modified.duration.in.periods / 2
-            modified.duration.in.years <- macaulay.duration / (1 + input$ytm1 / 2)
+## duration ----
+numerator.duration <- periods %*% (payments * (1 / (1 + (ytm / 2))^periods))
+duration.in.periods <- numerator.duration / bv
+macaulay.duration <- duration.in.periods / 2
+## modified.duration.in.periods <- duration.in.periods / (1 + ytm)
+## modified.duration.in.years <- modified.duration.in.periods / 2
+modified.duration.in.years <- macaulay.duration / (1 + ytm / 2)
 
-            ## convexity ----
-            second.derivative <- (periods * (periods + 1)) %*% ((payments * (1 / (1 + input$ytm1 / 2)^(periods + 2))))
-            
-            convexity <- second.derivative / bv
+## convexity ----
+second.derivative <- (periods * (periods + 1)) %*% ((payments * (1 / (1 + ytm / 2)^(periods + 2))))
 
-            ## annualize semiannual convexity
-            convexity <- convexity / (2^2)
+convexity <- second.derivative / bv
 
-            ## approximate change in price
-            price.change.by.duration <- -modified.duration.in.years * bv * input$change.ytm
-            price.change.by.duration.convexity <- price.change.by.duration + 0.5 * convexity * bv * (input$change.ytm)^2
+## annualize semiannual convexity
+convexity <- convexity / (2^2)
 
-            ## approximate percent change
-            percent.change.by.duration <- -modified.duration.in.years * input$change.ytm
-            percent.change.by.duration.convexity <- percent.change.by.duration + 0.5 * convexity * (input$change.ytm)^2
-            predicted.bv <- bv + price.change.by.duration.convexity 
-           
+## approximate change in price
+price.change.by.duration <- -modified.duration.in.years * bv * change_ytm
+price.change.by.duration.convexity <- price.change.by.duration + 0.5 * convexity * bv * (change_ytm)^2
 
-            new.bond.value <- payments %*% (1 / (1 + ((input$ytm1 + input$change.ytm) / 2))^periods)
-            actual.price.change <- (new.bond.value / bv - 1) * bv
-            actual.percent.change <- (new.bond.value / bv - 1)
+## approximate percent change
+percent.change.by.duration <- -modified.duration.in.years * change_ytm
+percent.change.by.duration.convexity <- percent.change.by.duration + 0.5 * convexity * (change_ytm)^2
+predicted.bv <- bv + price.change.by.duration.convexity 
 
-            error <- abs(predicted.bv - new.bond.value)
 
-            df <- data.frame(c(macaulay.duration, modified.duration.in.years, convexity, percent.change.by.duration * 100, percent.change.by.duration.convexity * 100, actual.percent.change * 100, price.change.by.duration, price.change.by.duration.convexity, actual.price.change, new.bond.value, predicted.bv, error), row.names = c("Macaulay Duration", "Modified Duration", "Convexity", "% Change by Duration", "% Change by Duration and Convexity", "Actual % Change", "Price Change by Duration", "Price Change by Duration and Convexity", "Actual Price Change", "Actual New Price", "Predicted New Price", "Difference: Predicted vs Actual"), stringsAsFactors = "FALSE")
+new.bond.value <- payments %*% (1 / (1 + ((ytm + change_ytm) / 2))^periods)
+actual.price.change <- (new.bond.value / bv - 1) * bv
+actual.percent.change <- (new.bond.value / bv - 1)
 
-            names(df) <- ""
-            df
-            }, rownames = TRUE)#, align = 'c')
+error <- abs(predicted.bv - new.bond.value)
+
+df <- data.frame(c(macaulay.duration, modified.duration.in.years, convexity, percent.change.by.duration * 100, percent.change.by.duration.convexity * 100, actual.percent.change * 100, price.change.by.duration, price.change.by.duration.convexity, actual.price.change, new.bond.value, predicted.bv, error), row.names = c("Macaulay Duration", "Modified Duration", "Convexity", "% Change by Duration", "% Change by Duration and Convexity", "Actual % Change", "Price Change by Duration", "Price Change by Duration and Convexity", "Actual Price Change", "Actual New Price", "Predicted New Price", "Difference: Predicted vs Actual"), stringsAsFactors = "FALSE")
+
+names(df) <- ""
+
+library(xtable)
+
+print(xtable(df), type = "html")
 
 #+end_src
+
+#+RESULTS:
+#+begin_export html
+<!-- html table generated in R 4.1.2 by xtable 1.8-4 package -->
+<!-- Fri Feb 18 22:02:43 2022 -->
+<table border=1>
+<tr> <th>  </th> <th>  </th>  </tr>
+  <tr> <td align="right"> Macaulay Duration </td> <td align="right"> 7.49 </td> </tr>
+  <tr> <td align="right"> Modified Duration </td> <td align="right"> 7.13 </td> </tr>
+  <tr> <td align="right"> Convexity </td> <td align="right"> 64.44 </td> </tr>
+  <tr> <td align="right"> % Change by Duration </td> <td align="right"> -7.13 </td> </tr>
+  <tr> <td align="right"> % Change by Duration and Convexity </td> <td align="right"> -6.81 </td> </tr>
+  <tr> <td align="right"> Actual % Change </td> <td align="right"> -6.82 </td> </tr>
+  <tr> <td align="right"> Price Change by Duration </td> <td align="right"> -49.10 </td> </tr>
+  <tr> <td align="right"> Price Change by Duration and Convexity </td> <td align="right"> -46.88 </td> </tr>
+  <tr> <td align="right"> Actual Price Change </td> <td align="right"> -46.96 </td> </tr>
+  <tr> <td align="right"> Actual New Price </td> <td align="right"> 641.49 </td> </tr>
+  <tr> <td align="right"> Predicted New Price </td> <td align="right"> 641.56 </td> </tr>
+  <tr> <td align="right"> Difference: Predicted vs Actual </td> <td align="right"> 0.07 </td> </tr>
+   </table>
+#+end_export
